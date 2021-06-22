@@ -192,7 +192,7 @@ class GoldenCoin {
 		this.x = Math.random() * canvas.width;
 		this.y = canvas.height + 100; // spawn below bottom
 		this.radius = 60;
-		this.speed = Math.random() * 5 + 1;
+		this.speed = Math.random() * 2 + 1;
 		this.speedUpdated = false;
 		this.distance;
 		this.hit;
@@ -458,12 +458,13 @@ function animate() {
 		handleGoldenCoins();
 		player.update();
 		player.draw();
-		if (level == 4) {
+		if (level == 4 || level == 5) {
 			ctx.fillStyle = 'white';
 		}
-		if (level != 4) {
+		if (level != 4 && level !=5) {
 		ctx.fillStyle = 'black';
 		}
+		ctx.font = 'bold 60px Roboto';
 		ctx.fillText('Coins: ' + score, 25, 60);
 		ctx.fillText('Highscore: ' + highScore, 25, 120);
 		ctx.fillText('Rocket Miner', canvas.width / 2 - 175, 60);
