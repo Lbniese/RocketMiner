@@ -49,10 +49,10 @@ canvas.addEventListener('mouseup', function () {
 // player properties
 
 const playerLeft = new Image(); //player when mouse click left
-playerLeft.src = 'assets/img/jetpack_going_left.png';
+playerLeft.src = 'assets/img/playerleft.png';
 
 const playerRight = new Image(); // player when mouse click right
-playerRight.src = 'assets/img/jetpack_going_right.png';
+playerRight.src = 'assets/img/playerright.png';
 
 class Player {
 	constructor() {
