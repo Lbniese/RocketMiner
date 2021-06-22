@@ -91,14 +91,6 @@ class Player {
 			ctx.lineTo(mouse.x, mouse.y);
 			ctx.stroke();
 		}
-		/*
-            ctx.fillStyle = 'red';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
-            ctx.fillRect(this.x, this.y, this.radius, 10);
-            */
 		ctx.save();
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
@@ -134,7 +126,7 @@ class Player {
 // create blank player object
 const player = new Player();
 
-const coinsArray = [];
+let coinsArray = [];
 class Coin {
 	constructor() {
 		this.x = Math.random() * canvas.width;
@@ -153,17 +145,6 @@ class Coin {
 		const dy = this.y - player.y;
 		this.distance = Math.sqrt(dx * dx + dy * dy); // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 	}
-	/*
-    draw() {
-        ctx.fillStyle = 'yellow';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.drawImage(coin, this.y, this.radius, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.stroke();
-    }
-    */
 	draw() {
 		ctx.fillStyle = 'yellow';
 		ctx.lineWidth = 10;
@@ -205,7 +186,70 @@ function handleCoins() {
 	}
 }
 
-const taxArray = [];
+let goldenCoinsArray = [];
+class GoldenCoin {
+	constructor() {
+		this.x = Math.random() * canvas.width;
+		this.y = canvas.height + 100; // spawn below bottom
+		this.radius = 60;
+		this.speed = Math.random() * 5 + 1;
+		this.speedUpdated = false;
+		this.distance;
+		this.hit;
+		this.coinHeight = 618;
+		this.coinWidth = 618;
+	}
+	update() {
+		this.y -= this.speed;
+		const dx = this.x - player.x;
+		const dy = this.y - player.y;
+		this.distance = Math.sqrt(dx * dx + dy * dy); // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+	}
+	draw() {
+		ctx.fillStyle = 'orange';
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = 'black';
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+		ctx.fill();
+		ctx.closePath();
+		ctx.stroke();
+		ctx.fillStyle = 'black';
+		ctx.font = 'bold 35px Roboto';
+		ctx.fillText('Evade', this.x - 47, this.y);
+		ctx.fillText('Tax', this.x - 30, this.y + 30);
+	}
+}
+
+function handleGoldenCoins() {
+	if (frame % 500 == 0) {
+		//run code every 500 frames
+		if (level >= 3) { // only spawn at level 3 and above
+		goldenCoinsArray.push(new GoldenCoin());
+		console.log(goldenCoinsArray.length);
+		}
+	}
+	for (let g = goldenCoinsArray.length - 1; g >= 0; g--) {
+		goldenCoinsArray[g].update();
+		goldenCoinsArray[g].draw();
+		if (goldenCoinsArray[g].y < 0) {
+			// if Coin is outside canvas
+			//goldenCoinsArray.splice(g, 1); // then remove Coin¨
+			goldenCoinsArray.splice(g, 1);
+		}
+		if (goldenCoinsArray[g] && goldenCoinsArray[g].distance < goldenCoinsArray[g].radius + player.radius) {
+			console.log('Taxes cleared!');
+			if (!goldenCoinsArray[g].hit) {
+				pointSound.play();
+				goldenCoinsArray[g].hit = true;
+				goldenCoinsArray.splice(g, 1);
+				taxArray = [];
+			}
+		}
+	}
+}
+
+let taxArray = [];
 class Tax {
 	constructor() {
 		this.x = canvas.width;
@@ -411,6 +455,7 @@ function animate() {
 		levelHandler();
 		handleCoins();
 		handleTaxes();
+		handleGoldenCoins();
 		player.update();
 		player.draw();
 		if (level == 4) {
