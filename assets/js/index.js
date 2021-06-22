@@ -279,7 +279,7 @@ function handleTaxes() {
 	for (let t = taxArray.length - 1; t >= 0; t--) {
 		taxArray[t].update();
 		taxArray[t].draw();
-		if (taxArray[t].y < 0) {
+		if (taxArray[t].x < 0) {
 			// if Coin is outside canvas
 			taxArray.splice(t, 1); // then remove Tax
 		}
