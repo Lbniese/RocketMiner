@@ -413,6 +413,12 @@ function animate() {
 		handleTaxes();
 		player.update();
 		player.draw();
+		if (level == 4) {
+			ctx.fillStyle = 'white';
+		}
+		if (level != 4) {
+		ctx.fillStyle = 'black';
+		}
 		ctx.fillText('Coins: ' + score, 25, 60);
 		ctx.fillText('Highscore: ' + highScore, 25, 120);
 		ctx.fillText('Rocket Miner', canvas.width / 2 - 175, 60);
