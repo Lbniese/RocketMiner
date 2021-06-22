@@ -313,8 +313,15 @@ function handleTaxes() {
 		}
 	}
 	if (level == 6) {
-		if (frame % 10 == 0) {
-		//run code every 10 frames
+		if (frame % 20 == 0) {
+		//run code every 20 frames
+		taxArray.push(new Tax());
+		console.log(taxArray.length);
+		}
+	}
+	if (level == 7) {
+		if (frame % 15 == 0) {
+		//run code every 15 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
@@ -411,6 +418,13 @@ function levelHandler() {
 		level = 6;
 		// console.log('Level 4!');
 	}
+
+	if (score > 60) {
+		if (background.src != 'assets/img/background7.png') {
+			background.src = 'assets/img/background7.png';
+		}
+		level = 7;
+	}
 }
 
 function checkHighScore() {
@@ -458,10 +472,10 @@ function animate() {
 		handleGoldenCoins();
 		player.update();
 		player.draw();
-		if (level == 4 || level == 5) {
+		if (level == 4 || level == 5 || level == 7) {
 			ctx.fillStyle = 'white';
 		}
-		if (level != 4 && level !=5) {
+		if (level != 4 && level !=5 && level != 7) {
 		ctx.fillStyle = 'black';
 		}
 		ctx.font = 'bold 60px Roboto';
