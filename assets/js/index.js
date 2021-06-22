@@ -300,6 +300,7 @@ const background = new Image();
 function levelHandler() {
 
 	if (score < 0 && lifePoints > 0) {
+		background.src = 'assets/img/background1.png';
 		ctx.fillStyle = "red";
 		ctx.font = 'bold 75px Roboto';
 		ctx.fillText('You died and lost a life point!', 500, 500);
@@ -312,6 +313,7 @@ function levelHandler() {
 	}
 
 	if (score < 0 && lifePoints < 1) {
+		background.src = 'assets/img/background1.png';
 		ctx.fillStyle = "red";
 		ctx.font = 'bold 120px Roboto';
 		ctx.fillText('You lost!', 500, 500);
