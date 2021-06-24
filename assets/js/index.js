@@ -4,12 +4,14 @@ const canvas = document.getElementById('canvas');
 // getContext gives access to build canvas methods
 const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth - 20;
-canvas.height = window.innerHeight - 20;
+// set size of canvas a little smaller than the browser window
+canvas.width = window.innerWidth * 0.99;
+canvas.height = window.innerHeight * 0.98;
 
+// initial values for the game
 let score = 0;
 let highScore = localStorage.getItem('gameHighScore') || 0;
-let frame = 0;
+let frame = 0; //attach game events to this ever increasing frame value
 let level = 1;
 let paused = false;
 let lifePoints = 3;
@@ -30,13 +32,26 @@ const deductSound = new Howl({
 });
 
 // -- Mouse handling --
-let canvasPos = canvas.getBoundingClientRect();
-
+// js object mouse -- initial position of mouse (middle of the screen)
 const mouse = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    click: false,
+    click: false, //mouse pressed or released?
 };
+
+let canvasPos = canvas.getBoundingClientRect(); //measure current size and position of canvas element
+
+// callback function
+canvas.addEventListener('mousedown', (event) => {
+	mouse.click = true;
+    mouse.x = event.x - canvasPos.left; //offset mouse position based on canvasPos values
+    mouse.y = event.y - canvasPos.top; //offset mouse position based on canvasPos values
+});
+
+// callback function where we set mouse click to false
+canvas.addEventListener('mouseup', () => {
+    mouse.click = false;
+});
 
 // player properties
 const playerLeft = new Image(); //player going left
@@ -49,36 +64,37 @@ class Player {
     constructor() {
         this.x = canvas.width / 2; // initial starting coordinates
         this.y = canvas.height / 2; // initial starting coordinates
-        this.radius = 50;
-        this.angle = 0;
-        this.frameX = 0;
+        this.radius = 50; //size of the player which is a circle (we dont use the image size)
+        this.angle = 0; //rotate player to current mouse position
+        this.frameX = 0; //current image of the spritesheet we use
         this.frameY = 0;
-        this.spriteWidth = 3460 / 5;
+        this.spriteWidth = 3460 / 5; //size of spritesheet
         this.spriteHeight = 1797 / 3;
     }
+    update() { // update method that updates player position (move player to mouse)
+        const dx = this.x - mouse.x; // distance on x-axis
+        const dy = this.y - mouse.y; // distance on y-axis
 
-    update() {
-        const dx = this.x - mouse.x;
-        const dy = this.y - mouse.y;
-
+		// --
         this.angle = Math.atan2(dy, dx);
 
+		// --
         if (mouse.x !== this.x) {
-            this.x -= dx / 30; // divide by 30 to slow down
+            this.x -= dx / 30; // divide by 30 to slow down and avoid the player jumping to mouse postion
         }
         if (mouse.y !== this.y) {
-            this.y -= dy / 30; // divide by 30 to slow down
+            this.y -= dy / 30; // divide by 30 to slow down and avoid the player jumping to mouse postion
         }
     }
 
-    draw() {
-        // draw line from mouse position to player
-        if (mouse.click) {
-            (ctx.lineWidth = 0), 2;
+    draw() { // draw() method - draw line from mouse position to player to see direction of mousement
+		const debugDirection = false;
+        if (mouse.click && debugDirection) {
+            ctx.lineWidth = 0.2;
             ctx.beginPath();
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.stroke();
+            ctx.moveTo(this.x, this.y); // current player position
+            ctx.lineTo(mouse.x, mouse.y); // end point of the line
+            ctx.stroke(); // connect the two points
         }
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -124,12 +140,12 @@ class Coin {
         this.y = canvas.height + 100; // spawn below bottom
         this.radius = 35;
         this.speed = Math.random() * 5 + 1;
-        this.distance;
-        this.hit;
+        this.distance; //distance between coin and player
+        this.hit; // was the coin hit?
     }
 
     update() {
-        this.y -= this.speed;
+        this.y -= this.speed; //every coin will rise a different speed
         const dx = this.x - player.x;
         const dy = this.y - player.y;
         this.distance = Math.sqrt(dx * dx + dy * dy); // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
@@ -140,7 +156,7 @@ class Coin {
         ctx.lineWidth = 10;
         ctx.strokeStyle = 'black';
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // draw circle
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -275,7 +291,7 @@ class Tax {
 
 function taxHandler() {
     if (level === 2) {
-        if (frame % 150 === 0) {
+        if (frame % 150 === 0) { //if frame value is divisible by 150 with 0 remainder
             //run code every 150 frames
             taxArray.push(new Tax());
             console.log(taxArray.length);
@@ -328,7 +344,7 @@ function taxHandler() {
             console.log('Coin Deducted');
             if (!taxArray[t].hit) {
                 deductSound.play();
-                score = score - 5;
+                score = score - 5; //lose 5 coins on impact
                 taxArray[t].hit = true;
                 taxArray.splice(t, 1);
             }
@@ -416,15 +432,6 @@ function levelHandler() {
     }
 }
 
-canvas.addEventListener('mousedown', (event) => {
-    mouse.x = event.x - canvasPos.left;
-    mouse.y = event.y - canvasPos.top;
-});
-
-canvas.addEventListener('mouseup', () => {
-    mouse.click = false;
-});
-
 function togglePause() {
     if (!paused) {
         paused = true;
@@ -460,7 +467,7 @@ window.addEventListener('keydown', function (e) {
 // animate loop
 function animate() {
     if (!paused) { // only draw etc when togglePause is not active
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // clearRect on each frame
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // clearRect canvas dimensions to clear old 'paint ;)'
         ctx.drawImage(background, 10, 0, canvas.width, canvas.height); // draw background as the first thing (the background changes depending on level)
         checkHighScore(); // HighScore handler that uses LocalStorage
         levelHandler(); // levelHandler that changes the background and level values depending on score
@@ -484,7 +491,7 @@ function animate() {
         ctx.font = ctx.font = 'bold 30px Roboto';
         ctx.fillText('Press C to clear HighScore', 50, canvas.height - 25);
         ctx.fillText('Press P to pause/unpause', 50, canvas.height - 60);
-        frame++;
+        frame++; // increase for every frame of animation
     }
     requestAnimationFrame(animate);
 }
