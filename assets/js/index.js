@@ -61,7 +61,6 @@ class Player {
 		this.angle = 0;
 		this.frameX = 0;
 		this.frameY = 0;
-		this.frame = 0;
 		this.spriteWidth = 3460 / 5;
 		this.spriteHeight = 1797 / 3;
 	}
@@ -70,13 +69,12 @@ class Player {
 		const dx = this.x - mouse.x;
 		const dy = this.y - mouse.y;
 
-		let theta = Math.atan2(dy, dx);
-		this.angle = theta;
+		this.angle = Math.atan2(dy, dx);
 
-		if (mouse.x != this.x) {
+		if (mouse.x !== this.x) {
 			this.x -= dx / 30; // divide by 30 to slow down
 		}
-		if (mouse.y != this.y) {
+		if (mouse.y !== this.y) {
 			this.y -= dy / 30; // divide by 30 to slow down
 		}
 	}
@@ -101,7 +99,7 @@ class Player {
 				this.frameY * this.spriteHeight,
 				this.spriteWidth,
 				this.spriteHeight,
-				0 - 60, //-60 and -70 to cover the ball with collission
+				0 - 60, //-60 and -70 to cover the ball with collision
 				0 - 70,
 				this.spriteWidth / 4,
 				this.spriteHeight / 4
@@ -113,7 +111,7 @@ class Player {
 				this.frameY * this.spriteHeight,
 				this.spriteWidth,
 				this.spriteHeight,
-				0 - 60, //-60 and -70 to cover the ball with collission
+				0 - 60, //-60 and -70 to cover the ball with collision
 				0 - 70,
 				this.spriteWidth / 4,
 				this.spriteHeight / 4
@@ -132,11 +130,8 @@ class Coin {
 		this.y = canvas.height + 100; // spawn below bottom
 		this.radius = 35;
 		this.speed = Math.random() * 5 + 1;
-		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		// this.coinHeight = 618;
-		// this.coinWidth = 618;
 	}
 	update() {
 		this.y -= this.speed;
@@ -160,7 +155,7 @@ class Coin {
 }
 
 function coinHandler() {
-	if (frame % 50 == 0) {
+	if (frame % 50 === 0) {
 		//run code every 50 frames
 		coinsArray.push(new Coin());
 		console.log(coinsArray.length);
@@ -192,11 +187,8 @@ class GoldenCoin {
 		this.y = canvas.height + 100; // spawn below bottom
 		this.radius = 60;
 		this.speed = Math.random() * 2 + 1;
-		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		// this.coinHeight = 618;
-		// this.coinWidth = 618;
 	}
 	update() {
 		this.y -= this.speed;
@@ -221,7 +213,7 @@ class GoldenCoin {
 }
 
 function goldenCoinHandler() {
-	if (frame % 500 == 0) {
+	if (frame % 500 === 0) {
 		//run code every 500 frames
 		if (level >= 3) { // only spawn at level 3 and above
 		goldenCoinsArray.push(new GoldenCoin());
@@ -255,11 +247,8 @@ class Tax {
 		this.y = canvas.height * Math.random(); // spawn mid?
 		this.radius = 45;
 		this.speed = Math.random() * 2 + 1;
-		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		// this.coinHeight = 618;
-		// this.coinWidth = 618;
 	}
 	update() {
 		this.x -= this.speed;
@@ -283,43 +272,43 @@ class Tax {
 }
 
 function taxHandler() {
-	if (level == 2) {
-		if (frame % 150 == 0) {
+	if (level === 2) {
+		if (frame % 150 === 0) {
 		//run code every 150 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
 	}
-	if (level == 3) {
-		if (frame % 100 == 0) {
+	if (level === 3) {
+		if (frame % 100 === 0) {
 		//run code every 100 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
 	}
-	if (level == 4) {
-		if (frame % 50 == 0) {
+	if (level === 4) {
+		if (frame % 50 === 0) {
 		//run code every 50 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
 	}
-	if (level == 5) {
-		if (frame % 25 == 0) {
+	if (level === 5) {
+		if (frame % 25 === 0) {
 		//run code every 25 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
 	}
-	if (level == 6) {
-		if (frame % 20 == 0) {
+	if (level === 6) {
+		if (frame % 20 === 0) {
 		//run code every 20 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
 		}
 	}
-	if (level == 7) {
-		if (frame % 15 == 0) {
+	if (level === 7) {
+		if (frame % 15 === 0) {
 		//run code every 15 frames
 		taxArray.push(new Tax());
 		console.log(taxArray.length);
@@ -372,14 +361,14 @@ function levelHandler() {
 	}
 
 	if (score < 5) {
-		if (background.src != 'assets/img/background1.jpg') {
+		if (background.src !== 'assets/img/background1.jpg') {
 		background.src = 'assets/img/background1.png';
 		}
 		// console.log('Level 1!');
 		level = 1;
 	}
 	if (score > 10) {
-		if (background.src != 'assets/img/background2.jpg') {
+		if (background.src !== 'assets/img/background2.jpg') {
 		background.src = 'assets/img/background2.png';
 		}
 		level = 2;
@@ -387,7 +376,7 @@ function levelHandler() {
 	}
 
 	if (score > 20) {
-		if (background.src != 'assets/img/background3.jpg') {
+		if (background.src !== 'assets/img/background3.jpg') {
 		background.src = 'assets/img/background3.png';
 		}
 		level = 3;
@@ -395,7 +384,7 @@ function levelHandler() {
 	}
 
 	if (score > 30) {
-		if (background.src != 'assets/img/background4.jpg') {
+		if (background.src !== 'assets/img/background4.jpg') {
 		background.src = 'assets/img/background4.jpg';
 		}
 		level = 4;
@@ -403,7 +392,7 @@ function levelHandler() {
 	}
 
 	if (score > 40) {
-		if (background.src != 'assets/img/background5.jpg') {
+		if (background.src !== 'assets/img/background5.jpg') {
 		background.src = 'assets/img/background5.jpg';
 		}
 		level = 5;
@@ -411,7 +400,7 @@ function levelHandler() {
 	}
 
 	if (score > 50) {
-		if (background.src != 'assets/img/background6.jpg') {
+		if (background.src !== 'assets/img/background6.jpg') {
 		background.src = 'assets/img/background6.jpg';
 		}	
 		level = 6;
@@ -419,7 +408,7 @@ function levelHandler() {
 	}
 
 	if (score > 60) {
-		if (background.src != 'assets/img/background7.png') {
+		if (background.src !== 'assets/img/background7.png') {
 			background.src = 'assets/img/background7.png';
 		}
 		level = 7;
@@ -435,7 +424,7 @@ function checkHighScore() {
 }
 
 window.addEventListener('keydown', function (e) {
-	var key = e.keyCode;
+	const key = e.keyCode;
 	if (key === 67) {
 		// c key
 		localStorage.setItem('gameHighScore', 0);
@@ -453,7 +442,7 @@ function togglePause() {
 }
 
 window.addEventListener('keydown', function (e) {
-	var key = e.keyCode;
+	const key = e.keyCode;
 	if (key === 80) {
 		// p key
 		togglePause();
@@ -465,27 +454,27 @@ function animate() {
 	if (!paused) { // only draw etc when togglePause is not active
 		ctx.clearRect(0, 0, canvas.width, canvas.height); // clearRect on each frame
 		ctx.drawImage(background, 10, 0, canvas.width, canvas.height); // draw background as the first thing (the background changes depending on level)
-		checkHighScore(); // Highscore handler that uses LocalStorage
+		checkHighScore(); // HighScore handler that uses LocalStorage
 		levelHandler(); // levelHandler that changes the background and level values depending on score
 		coinHandler(); // coinHandler that spawns coins etc
 		taxHandler(); // taxHandler that spawns taxes etc
 		goldenCoinHandler(); // goldenCoinHandler that spawns golden coins etc
 		player.update(); 
 		player.draw();
-		if (level == 4 || level == 5 || level == 7) { // certain levels require white text cause of their dark background
+		if (level === 4 || level === 5 || level === 7) { // certain levels require white text cause of their dark background
 			ctx.fillStyle = 'white';
 		}
-		if (level != 4 && level !=5 && level != 7) { // rest of the levels require black text cause of their light background
+		if (level !== 4 && level !==5 && level !== 7) { // rest of the levels require black text cause of their light background
 		ctx.fillStyle = 'black';
 		}
 		ctx.font = 'bold 60px Roboto'; // we change font several places, so lets make sure the font size is right here
 		ctx.fillText('Coins: ' + score, 25, 60);
-		ctx.fillText('Highscore: ' + highScore, 25, 120);
+		ctx.fillText('HighScore: ' + highScore, 25, 120);
 		ctx.fillText('Rocket Miner', canvas.width / 2 - 175, 60);
 		ctx.fillText('Level: ' + level, canvas.width - 225, 60);
 		ctx.fillText('Life Points: ' + lifePoints, canvas.width - 350, canvas.height - 25);
 		ctx.font = ctx.font = 'bold 30px Roboto';
-		ctx.fillText('Press C to clear Highscore', 50, canvas.height - 25);
+		ctx.fillText('Press C to clear HighScore', 50, canvas.height - 25);
 		ctx.fillText('Press P to pause/unpause', 50, canvas.height - 60);
 		frame++;
 	}
