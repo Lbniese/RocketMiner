@@ -13,6 +13,7 @@ let frame = 0;
 let level = 1;
 let paused = false;
 let lifePoints = 3;
+let background = new Image();
 
 // font
 ctx.font = 'bold 60px Roboto';
@@ -36,15 +37,6 @@ const mouse = {
     y: canvas.height / 2,
     click: false,
 };
-
-canvas.addEventListener('mousedown', (event) => {
-    mouse.x = event.x - canvasPos.left;
-    mouse.y = event.y - canvasPos.top;
-});
-
-canvas.addEventListener('mouseup', () => {
-    mouse.click = false;
-});
 
 // player properties
 const playerLeft = new Image(); //player going left
@@ -344,8 +336,6 @@ function taxHandler() {
     }
 }
 
-const background = new Image();
-
 function levelHandler() {
 
     if (score < 0 && lifePoints > 0) {
@@ -426,22 +416,14 @@ function levelHandler() {
     }
 }
 
-function checkHighScore() {
-    if (score > localStorage.getItem('gameHighScore')) {
-        localStorage.setItem('gameHighScore', score);
-        highScore = score;
-    }
-}
-
-window.addEventListener('keydown', function (e) {
-    const key = e.keyCode;
-    if (key === 67) {
-        // c key
-        localStorage.setItem('gameHighScore', 0);
-        highScore = 0;
-    }
+canvas.addEventListener('mousedown', (event) => {
+    mouse.x = event.x - canvasPos.left;
+    mouse.y = event.y - canvasPos.top;
 });
 
+canvas.addEventListener('mouseup', () => {
+    mouse.click = false;
+});
 
 function togglePause() {
     if (!paused) {
@@ -456,6 +438,22 @@ window.addEventListener('keydown', function (e) {
     if (key === 80) {
         // p key
         togglePause();
+    }
+});
+
+function checkHighScore() {
+    if (score > localStorage.getItem('gameHighScore')) {
+        localStorage.setItem('gameHighScore', score);
+        highScore = score;
+    }
+}
+
+window.addEventListener('keydown', function (e) {
+    const key = e.keyCode;
+    if (key === 67) {
+        // c key
+        localStorage.setItem('gameHighScore', 0);
+        highScore = 0;
     }
 });
 
