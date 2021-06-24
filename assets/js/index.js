@@ -14,9 +14,10 @@ let level = 1;
 let paused = false;
 let lifePoints = 3;
 
-// font?
+// font
 ctx.font = 'bold 60px Roboto';
 
+// howler.js sounds
 const pointSound = new Howl({
 	src: ['assets/sound/point.mp3'],
 	volume: 0.1,
@@ -28,7 +29,6 @@ const deductSound = new Howl({
 });
 
 // -- Mouse handling --
-
 let canvasPos = canvas.getBoundingClientRect();
 
 const mouse = {
@@ -37,21 +37,20 @@ const mouse = {
 	click: false,
 };
 
-canvas.addEventListener('mousedown', function (event) {
+canvas.addEventListener('mousedown', (event) => {
 	mouse.x = event.x - canvasPos.left;
 	mouse.y = event.y - canvasPos.top;
 });
 
-canvas.addEventListener('mouseup', function () {
+canvas.addEventListener('mouseup', () => {
 	mouse.click = false;
 });
 
 // player properties
-
-const playerLeft = new Image(); //player when mouse click left
+const playerLeft = new Image(); //player going left
 playerLeft.src = 'assets/img/playerleft.png';
 
-const playerRight = new Image(); // player when mouse click right
+const playerRight = new Image(); // player going right
 playerRight.src = 'assets/img/playerright.png';
 
 class Player {
@@ -102,11 +101,11 @@ class Player {
 				this.frameY * this.spriteHeight,
 				this.spriteWidth,
 				this.spriteHeight,
-				0 - 60,
+				0 - 60, //-60 and -70 to cover the ball with collission
 				0 - 70,
 				this.spriteWidth / 4,
 				this.spriteHeight / 4
-			); //-60 and -70 to cover the ball with collission
+			); 
 		} else {
 			ctx.drawImage(
 				playerRight,
@@ -114,16 +113,16 @@ class Player {
 				this.frameY * this.spriteHeight,
 				this.spriteWidth,
 				this.spriteHeight,
-				0 - 60,
+				0 - 60, //-60 and -70 to cover the ball with collission
 				0 - 70,
 				this.spriteWidth / 4,
 				this.spriteHeight / 4
-			); //-60 and -70 to cover the ball with collission
+			); 
 		}
 		ctx.restore();
 	}
 }
-// create blank player object
+// create default player object
 const player = new Player();
 
 let coinsArray = [];
@@ -136,8 +135,8 @@ class Coin {
 		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		this.coinHeight = 618;
-		this.coinWidth = 618;
+		// this.coinHeight = 618;
+		// this.coinWidth = 618;
 	}
 	update() {
 		this.y -= this.speed;
@@ -160,7 +159,7 @@ class Coin {
 	}
 }
 
-function handleCoins() {
+function coinHandler() {
 	if (frame % 50 == 0) {
 		//run code every 50 frames
 		coinsArray.push(new Coin());
@@ -196,8 +195,8 @@ class GoldenCoin {
 		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		this.coinHeight = 618;
-		this.coinWidth = 618;
+		// this.coinHeight = 618;
+		// this.coinWidth = 618;
 	}
 	update() {
 		this.y -= this.speed;
@@ -221,7 +220,7 @@ class GoldenCoin {
 	}
 }
 
-function handleGoldenCoins() {
+function goldenCoinHandler() {
 	if (frame % 500 == 0) {
 		//run code every 500 frames
 		if (level >= 3) { // only spawn at level 3 and above
@@ -259,8 +258,8 @@ class Tax {
 		this.speedUpdated = false;
 		this.distance;
 		this.hit;
-		this.coinHeight = 618;
-		this.coinWidth = 618;
+		// this.coinHeight = 618;
+		// this.coinWidth = 618;
 	}
 	update() {
 		this.x -= this.speed;
@@ -283,7 +282,7 @@ class Tax {
 	}
 }
 
-function handleTaxes() {
+function taxHandler() {
 	if (level == 2) {
 		if (frame % 150 == 0) {
 		//run code every 150 frames
@@ -408,7 +407,7 @@ function levelHandler() {
 		background.src = 'assets/img/background5.jpg';
 		}
 		level = 5;
-		// console.log('Level 4!');
+		// console.log('Level 5!');
 	}
 
 	if (score > 50) {
@@ -416,7 +415,7 @@ function levelHandler() {
 		background.src = 'assets/img/background6.jpg';
 		}	
 		level = 6;
-		// console.log('Level 4!');
+		// console.log('Level 6!');
 	}
 
 	if (score > 60) {
@@ -424,6 +423,7 @@ function levelHandler() {
 			background.src = 'assets/img/background7.png';
 		}
 		level = 7;
+		// console.log('Level 7!');
 	}
 }
 
@@ -462,23 +462,23 @@ window.addEventListener('keydown', function (e) {
 
 // animate loop
 function animate() {
-	if (!paused) {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(background, 10, 0, canvas.width, canvas.height);
-		checkHighScore();
-		levelHandler();
-		handleCoins();
-		handleTaxes();
-		handleGoldenCoins();
-		player.update();
+	if (!paused) { // only draw etc when togglePause is not active
+		ctx.clearRect(0, 0, canvas.width, canvas.height); // clearRect on each frame
+		ctx.drawImage(background, 10, 0, canvas.width, canvas.height); // draw background as the first thing (the background changes depending on level)
+		checkHighScore(); // Highscore handler that uses LocalStorage
+		levelHandler(); // levelHandler that changes the background and level values depending on score
+		coinHandler(); // coinHandler that spawns coins etc
+		taxHandler(); // taxHandler that spawns taxes etc
+		goldenCoinHandler(); // goldenCoinHandler that spawns golden coins etc
+		player.update(); 
 		player.draw();
-		if (level == 4 || level == 5 || level == 7) {
+		if (level == 4 || level == 5 || level == 7) { // certain levels require white text cause of their dark background
 			ctx.fillStyle = 'white';
 		}
-		if (level != 4 && level !=5 && level != 7) {
+		if (level != 4 && level !=5 && level != 7) { // rest of the levels require black text cause of their light background
 		ctx.fillStyle = 'black';
 		}
-		ctx.font = 'bold 60px Roboto';
+		ctx.font = 'bold 60px Roboto'; // we change font several places, so lets make sure the font size is right here
 		ctx.fillText('Coins: ' + score, 25, 60);
 		ctx.fillText('Highscore: ' + highScore, 25, 120);
 		ctx.fillText('Rocket Miner', canvas.width / 2 - 175, 60);
